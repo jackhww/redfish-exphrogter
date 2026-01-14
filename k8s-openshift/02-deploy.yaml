@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redfish-exporter
+  namespace: redfish-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redfish-exporter
+  template:
+    metadata:
+      labels:
+        app: redfish-exporter
+    spec:
+      serviceAccountName: redfish-exporter
+      containers:
+        - name: redfish-exporter
+          image: <repo:image> ## Replace with your internal repo if pulling in an air-gapped environment
+          ports:
+            - name: http
+              containerPort: 9348
+          env:
+            - name: VERIFY_TLS
+              value: "false"
+            - name: CONFIG_PATH
+              value: "/etc/redfish/idrac.yml"
+          volumeMounts:
+            - name: cfg
+              mountPath: /etc/redfish
+              readOnly: true
+      volumes:
+        - name: cfg
+          secret:
+            secretName: redfish-exporter-config
+            items:
+              - key: idrac.yml
+                path: idrac.yml

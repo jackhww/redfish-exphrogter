@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redfish-exporter
+  namespace: redfish-exporter
+spec:
+  selector:
+    matchLabels:
+      app: redfish-exporter
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 1m
+      params:
+        target: ["<IP_ADDR_NODE5>"]
+      relabelings:
+        - sourceLabels: [__param_target]
+          targetLabel: instance
+
+    - port: http
+      path: /metrics
+      interval: 1m
+      params:
+        target: ["<IP_ADDR_NODE4>"]
+      relabelings:
+        - sourceLabels: [__param_target]
+          targetLabel: instance
+
+    - port: http
+      path: /metrics
+      interval: 1m
+      params:
+        target: ["<IP_ADDR_NODE3>"]
+      relabelings:
+        - sourceLabels: [__param_target]
+          targetLabel: instance
+
+    - port: http
+      path: /metrics
+      interval: 1m
+      params:
+        target: ["<IP_ADDR_NODE2>"]
+      relabelings:
+        - sourceLabels: [__param_target]
+          targetLabel: instance
